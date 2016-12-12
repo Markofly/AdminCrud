@@ -1,3 +1,7 @@
+@if (session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
 <div class="pull-right">
     <a href="{{ $form->getCreateRoute() }}" class="btn btn-success">Add new user</a>
 </div>
@@ -21,7 +25,15 @@
             <td>
                 <a href="{{ $form->getShowRoute($item['id']) }}">View</a> |
                 <a href="{{ $form->getEditRoute($item['id']) }}">Edit</a> |
-                <a href="#">Delete</a>
+
+                <a href="{{ $form->getDestroyRoute($item['id'])}}"
+                   onclick="event.preventDefault(); document.getElementById('list-delete-form-{{ $item['id'] }}').submit();">
+                    Delete
+                </a>
+                <form id="list-delete-form-{{ $item['id'] }}" action="{{ $form->getDestroyRoute($item['id']) }}" method="POST" style="display: none;">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+                </form>
             </td>
         </tr>
     @endforeach

@@ -107,7 +107,10 @@ class baseCrudController extends BaseController
      */
     public function destroy($id)
     {
-        //
+        $item = $this->adminCrud->getModel()->findOrFail($id);
+        $item->delete();
+
+        return redirect()->back()->with('success', 'Item is successfully deleted!');
     }
 }
 
