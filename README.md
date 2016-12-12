@@ -1,0 +1,2 @@
+# AdminCrud
+Laravel crud
