@@ -1,0 +1,18 @@
+{
+    "name": "markofly/admin-crud",
+    "description": "Admin crud generator",
+    "authors": [
+        {
+            "name": "Marko Murumaa",
+            "email": "marko.murumaa@gmail.com"
+        }
+    ],
+    "autoload" : {
+        "psr-4": {
+            "Markofly\\AdminCrud\\": "src"
+        }
+    },
+    "require": {
+        "php": ">=5.5.0"
+    }
+}
