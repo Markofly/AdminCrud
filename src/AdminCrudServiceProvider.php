@@ -13,7 +13,11 @@ class AdminCrudServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/path/to/config/file.php' => config_path('markofly/config.php'),
+            __DIR__.'/config/admincrud.php' => config_path('markofly/admincrud.php'),
+        ]);
+
+        $this->publishes([
+            __DIR__.'/forms' => config_path('markofly/forms/'),
         ]);
 
         $this->loadViewsFrom(__DIR__.'/views', 'AdminCrud');
@@ -26,6 +30,9 @@ class AdminCrudServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/admincrud.php', 'markofly.admincrud'
+        );
+
     }
 }

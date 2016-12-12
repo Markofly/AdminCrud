@@ -83,8 +83,7 @@ class Form
 
     protected function getRoutePrefix()
     {
-
-        return 'admin.' . $this->routeName . '.';
+        return $this->routeName . (substr($this->routeName, -1) != '.' ? '.' : '');
     }
 
     protected function createFormFieldObjects($fields)

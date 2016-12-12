@@ -87,7 +87,7 @@ class AdminCrud
 
     public function getFormFile($name)
     {
-        $objectPath = app_path('AdminPanel/Objects/' . $name .'.php');
+        $objectPath = config('markofly.admincrud.path'). '/' . $name .'.php';
 
         if (!file_exists($objectPath)) {
             return false;
