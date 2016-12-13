@@ -2,6 +2,8 @@
 
 namespace Markofly\AdminCrud;
 
+use Illuminate\Http\Request;
+
 trait AdminCrudTrait
 {
 
