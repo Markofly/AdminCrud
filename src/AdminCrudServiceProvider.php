@@ -12,15 +12,23 @@ class AdminCrudServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([
-            __DIR__.'/config/admincrud.php' => config_path('markofly/admincrud.php'),
-        ]);
+        $this->loadViewsFrom(__DIR__ . '/resources/views', 'AdminCrud');
 
-        $this->publishes([
-            __DIR__.'/forms' => config_path('markofly/forms/'),
-        ]);
+        if ($this->app->runningInConsole()) {
 
-        $this->loadViewsFrom(__DIR__.'/views', 'AdminCrud');
+            $this->publishes([
+                __DIR__.'/config/admincrud.php' => config_path('markofly/admincrud.php'),
+            ], 'AdminCrud');
+
+            $this->publishes([
+                __DIR__.'/forms' => config_path('markofly/forms/'),
+            ], 'AdminCrud');
+
+            $this->publishes([
+                __DIR__.'/resources/views' => resource_path('views/vendor/AdminCrud/'),
+            ], 'AdminCrud');
+
+        }
     }
 
     /**
