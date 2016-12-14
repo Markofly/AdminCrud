@@ -1,5 +1,5 @@
 {
-    "name": "markofly/admin-crud",
+    "name": "markofly/admincrud",
     "description": "Admin crud generator",
     "authors": [
         {
@@ -13,6 +13,8 @@
         }
     },
     "require": {
-        "php": ">=5.5.0"
+        "php": ">=5.5.0",
+        "illuminate/http": ">= 5.0",
+        "illuminate/support": ">= 5.0"
     }
 }
