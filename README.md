@@ -6,7 +6,7 @@ Laravel crud
 Using composer
 
 ```bash
-$ composer require markofly/admincrud
+$ composer require markofly/admincrud "v0.0.1-alpha"
 ```
 
 Add the service provider to `config/app.php`
