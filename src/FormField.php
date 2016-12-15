@@ -1,17 +1,39 @@
 <?php
 namespace Markofly\AdminCrud;
 
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * Class FormField
+ * @package Markofly\AdminCrud
+ */
 class FormField
 {
 
+    /**
+     * @var string
+     */
     protected $databaseField;
 
+    /**
+     * @var string
+     */
     protected $label;
 
+    /**
+     * @var null|array
+     */
     protected $validationRules;
 
+    /**
+     * @var null|string
+     */
     protected $fieldType;
 
+    /**
+     * FormField constructor.
+     * @param $field
+     */
     public function __construct($field)
     {
         $this->label = $field['label'];
@@ -20,6 +42,11 @@ class FormField
         $this->fieldType = (isset($field['field_type'])) ? $field['field_type'] : null;
     }
 
+    /**
+     * @param null|Model $item
+     * @param bool $showDatabaseValue
+     * @return string
+     */
     public function getFormInput($item = null, $showDatabaseValue = false)
     {
         $args = [
@@ -35,6 +62,11 @@ class FormField
         return view('AdminCrud::fields.text', $args)->render();
     }
 
+    /**
+     * @param Model $item
+     * @param bool $showDatabaseValue
+     * @return mixed|string
+     */
     public function getInputValue($item, $showDatabaseValue = false)
     {
         if (old($this->getDatabaseField())) {
@@ -52,16 +84,25 @@ class FormField
         return $item[$this->getDatabaseField()];
     }
 
+    /**
+     * @return string
+     */
     public function getLabel()
     {
         return $this->label;
     }
 
+    /**
+     * @return string
+     */
     public function getDatabaseField()
     {
         return $this->databaseField;
     }
 
+    /**
+     * @return array|null
+     */
     public function getValidationRules()
     {
         return $this->validationRules;
