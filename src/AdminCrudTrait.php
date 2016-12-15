@@ -67,7 +67,7 @@ trait AdminCrudTrait
         $item = $this->adminCrud->getModel();
         $item = $item->create($request->all());
 
-        return redirect()->to($this->adminCrud->getObject()->getShowRoute($item->id))->with('success', 'Item is successfully created!');
+        return redirect()->to($this->adminCrud->getForm()->getShowRoute($item->id))->with('success', 'Item is successfully created!');
     }
 
     /**
