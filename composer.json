@@ -1,6 +1,7 @@
 {
     "name": "markofly/admincrud",
     "description": "Admin crud generator",
+    "license": "MIT",
     "authors": [
         {
             "name": "Marko Murumaa",
@@ -15,6 +16,7 @@
     "require": {
         "php": ">=5.5.0",
         "illuminate/http": ">= 5.0",
+        "illuminate/database": ">= 5.0",
         "illuminate/support": ">= 5.0"
     }
 }
