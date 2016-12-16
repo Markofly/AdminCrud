@@ -2,8 +2,8 @@
 
     {{ csrf_field() }}
 
-    @foreach($form->formFields as $field)
-        <div class="form-group{{ $errors->has($field->getDatabaseField()) ? ' has-error' : '' }}">
+    @foreach($form->getFields() as $field)
+        <div class="form-group{{ $errors->has($field->getFieldName()) ? ' has-error' : '' }}">
             {!! $field->getFormInput() !!}
         </div>
     @endforeach

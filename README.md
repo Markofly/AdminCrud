@@ -1,4 +1,7 @@
 # AdminCrud
+[![Packagist](https://img.shields.io/packagist/v/markofly/admincrud.svg)]()
+[![Packagist](https://img.shields.io/packagist/dt/markofly/admincrud.svg)]()
+
 Laravel crud
 
 ## Installation

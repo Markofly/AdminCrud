@@ -43,7 +43,7 @@ trait AdminCrudTrait
      */
     public function index()
     {
-        return view('AdminCrud::default', ['form' => $this->adminCrud->getList(), 'pageTitle' => $this->pageTitle]);
+        return view('AdminCrud::default', ['form' => $this->adminCrud->getListView(), 'pageTitle' => $this->pageTitle]);
     }
 
     /**
@@ -51,7 +51,7 @@ trait AdminCrudTrait
      */
     public function create()
     {
-        return view('AdminCrud::default', ['form' => $this->adminCrud->getCreateForm(), 'pageTitle' => $this->pageTitle]);
+        return view('AdminCrud::default', ['form' => $this->adminCrud->getCreateFormView(), 'pageTitle' => $this->pageTitle]);
     }
 
     /**
@@ -60,12 +60,13 @@ trait AdminCrudTrait
      */
     public function store(Request $request)
     {
+        $form = $this->adminCrud->getForm('create');
 
-        $rules = $this->adminCrud->getValidationRules();
+        $rules = $form->getValidationRules();
         $this->validate($request, $rules);
 
-        $item = $this->adminCrud->getModel();
-        $item = $item->create($request->all());
+        $item = $form->getModel();
+        $item = $item->create($form->getValuesFromCustomStoringMethod($request));
 
         return redirect()->to($this->adminCrud->getForm()->getShowRoute($item->id))->with('success', 'Item is successfully created!');
     }
@@ -76,7 +77,7 @@ trait AdminCrudTrait
      */
     public function show($id)
     {
-        return view('AdminCrud::default', ['form' => $this->adminCrud->getView($id), 'pageTitle' => $this->pageTitle]);
+        return view('AdminCrud::default', ['form' => $this->adminCrud->getShowView($id), 'pageTitle' => $this->pageTitle]);
     }
 
     /**
@@ -85,7 +86,7 @@ trait AdminCrudTrait
      */
     public function edit($id)
     {
-        return view('AdminCrud::default', ['form' => $this->adminCrud->getEditForm($id), 'pageTitle' => $this->pageTitle]);
+        return view('AdminCrud::default', ['form' => $this->adminCrud->getEditFormView($id), 'pageTitle' => $this->pageTitle]);
     }
 
     /**
@@ -95,11 +96,13 @@ trait AdminCrudTrait
      */
     public function update(Request $request, $id)
     {
-        $rules = $this->adminCrud->getValidationRules();
+        $form = $this->adminCrud->getForm('edit');
+
+        $rules = $form->getValidationRules();
         $this->validate($request, $rules);
 
-        $item = $this->adminCrud->getModel()->findOrFail($id);
-        $item->update($request->all());
+        $item = $form->getModel()->findOrFail($id);
+        $item->update($form->getValuesFromCustomStoringMethod($request));
 
         return redirect()->back()->with('success', 'Item is successfully saved!');
     }

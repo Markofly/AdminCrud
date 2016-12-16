@@ -9,7 +9,7 @@
     <thead>
     <tr>
         <th>#</th>
-        @foreach($form->fields as $field)
+        @foreach($form->getFields() as $field)
             <th>{{ $field->getLabel() }}</th>
         @endforeach
         <th>Actions</th>
@@ -19,7 +19,7 @@
     @foreach($items as $item)
         <tr>
             <td>{{ $loop->iteration + $skipped }}</td>
-            @foreach($form->fields as $field)
+            @foreach($form->getFields() as $field)
                 <td>{{ $item[$field->getDatabaseField()] }}</td>
             @endforeach
             <td>

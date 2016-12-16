@@ -1,4 +1,5 @@
 <?php
+
 namespace Markofly\AdminCrud;
 
 use Illuminate\Database\Eloquent\Model;
@@ -11,24 +12,9 @@ class FormField
 {
 
     /**
-     * @var string
+     * @var array
      */
-    protected $databaseField;
-
-    /**
-     * @var string
-     */
-    protected $label;
-
-    /**
-     * @var null|array
-     */
-    protected $validationRules;
-
-    /**
-     * @var null|string
-     */
-    protected $fieldType;
+    protected $fieldArray;
 
     /**
      * FormField constructor.
@@ -36,10 +22,7 @@ class FormField
      */
     public function __construct($field)
     {
-        $this->label = $field['label'];
-        $this->databaseField = $field['db_field'];
-        $this->validationRules = (isset($field['validation_rules'])) ? $field['validation_rules'] : null;
-        $this->fieldType = (isset($field['field_type'])) ? $field['field_type'] : null;
+        $this->fieldArray = $field;
     }
 
     /**
@@ -55,8 +38,12 @@ class FormField
             'showDatabaseValue' => $showDatabaseValue,
         ];
 
-        if ($this->fieldType == 'textarea') {
+        if ($this->getFieldType() == 'textarea') {
             return view('AdminCrud::fields.textarea', $args)->render();
+        }
+
+        if ($this->getFieldType() == 'password') {
+            return view('AdminCrud::fields.password', $args)->render();
         }
 
         return view('AdminCrud::fields.text', $args)->render();
@@ -69,8 +56,8 @@ class FormField
      */
     public function getInputValue($item, $showDatabaseValue = false)
     {
-        if (old($this->getDatabaseField())) {
-            return old($this->getDatabaseField());
+        if (old($this->getFieldName())) {
+            return old($this->getFieldName());
         }
 
         if (!$item) {
@@ -78,6 +65,10 @@ class FormField
         }
 
         if (!$showDatabaseValue) {
+            return '';
+        }
+
+        if (!isset($item[$this->getDatabaseField()])) {
             return '';
         }
 
@@ -89,22 +80,103 @@ class FormField
      */
     public function getLabel()
     {
-        return $this->label;
+        if (!isset($this->fieldArray['label'])) {
+            return $this->getFieldName();
+        }
+
+        return $this->fieldArray['label'];
+    }
+
+    /**
+     * @return string|bool
+     */
+    public function getDatabaseField()
+    {
+        if (!isset($this->fieldArray['database_field'])) {
+            return false;
+        }
+
+        return $this->fieldArray['database_field'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDatabaseField()
+    {
+        if ($this->getDatabaseField() === false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return string|bool
+     */
+    public function getFieldName()
+    {
+        if ($this->isDatabaseField() === true) {
+            return $this->getDatabaseField();
+        }
+
+        if (!isset($this->fieldArray['name'])) {
+            return false;
+        }
+
+        return $this->fieldArray['name'];
     }
 
     /**
      * @return string
      */
-    public function getDatabaseField()
+    public function getValidationRules()
     {
-        return $this->databaseField;
+        if (!isset($this->fieldArray['validation_rules'])) {
+            return '';
+        }
+
+        return $this->fieldArray['validation_rules'];
     }
 
     /**
-     * @return array|null
+     * @return mixed|string
      */
-    public function getValidationRules()
+    public function getFieldType()
     {
-        return $this->validationRules;
+        if (!isset($this->fieldArray['type'])) {
+            return '';
+        }
+
+        return $this->fieldArray['type'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEditable()
+    {
+        if (!isset($this->fieldArray['editable'])) {
+            return true;
+        }
+
+        return (bool) $this->fieldArray['editable'];
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function useStoringMethod($value)
+    {
+        if (!isset($this->fieldArray['storing_method'])) {
+            return $value;
+        }
+
+        if (!is_callable($this->fieldArray['storing_method'])) {
+            return $value;
+        }
+
+        return call_user_func($this->fieldArray['storing_method'], $value);
     }
 }

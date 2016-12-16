@@ -1,7 +1,6 @@
 <?php
-namespace Markofly\AdminCrud;
 
-use Illuminate\Database\Eloquent\Model;
+namespace Markofly\AdminCrud;
 
 /**
  * Class AdminCrud
@@ -17,18 +16,23 @@ class AdminCrud
     /**
      * AdminCrud constructor.
      * @param string $name
+     * @throws \Exception
      */
     public function __construct($name)
     {
+        if (!$this->isFormFileExists($name)) {
+            throw new \Exception('Form file not found.');
+        }
+
         $this->name = $name;
     }
 
     /**
      * @return null|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function getList()
+    public function getListView()
     {
-        $form = $this->getForm();
+        $form = $this->getForm('list');
 
         if (!$form) {
             return null;
@@ -44,7 +48,7 @@ class AdminCrud
 
         $skipped = ($items->currentPage() * $items->perPage()) - $items->perPage();
 
-        $html = view('AdminCrud::forms.list', ['form' => $form, 'items' => $items, 'skipped' => $skipped]);
+        $html = view('AdminCrud::forms.list', ['form' => $form, 'items' => $items, 'skipped' => $skipped])->render();
         return $html;
     }
 
@@ -52,11 +56,15 @@ class AdminCrud
      * @param $id
      * @return null|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function getView($id)
+    public function getShowView($id)
     {
-        $form = $this->getForm();
+        $form = $this->getForm('edit');
 
         if (!$form) {
+            return null;
+        }
+
+        if (!$form->getModel()) {
             return null;
         }
 
@@ -66,7 +74,7 @@ class AdminCrud
             return null;
         }
 
-        $html = view('AdminCrud::forms.edit', ['form' => $form, 'item' => $item]);
+        $html = view('AdminCrud::forms.edit', ['form' => $form, 'item' => $item])->render();
         return $html;
     }
 
@@ -74,11 +82,15 @@ class AdminCrud
      * @param $id
      * @return null|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function getEditForm($id)
+    public function getEditFormView($id)
     {
-        $form = $this->getForm();
+        $form = $this->getForm('edit');
 
         if (!$form) {
+            return null;
+        }
+
+        if (!$form->getModel()) {
             return null;
         }
 
@@ -88,16 +100,16 @@ class AdminCrud
             return null;
         }
 
-        $html = view('AdminCrud::forms.edit', ['form' => $form, 'item' => $item]);
+        $html = view('AdminCrud::forms.edit', ['form' => $form, 'item' => $item])->render();
         return $html;
     }
 
     /**
      * @return null|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function getCreateForm()
+    public function getCreateFormView()
     {
-        $form = $this->getForm();
+        $form = $this->getForm('create');
 
         if (!$form) {
             return null;
@@ -108,48 +120,17 @@ class AdminCrud
     }
 
     /**
-     * @return array
+     * @param string $type
+     * @return Form|null
      */
-    public function getValidationRules()
+    public function getForm($type = 'list')
     {
-        $rules = [];
-
-        if (!$this->getForm()) {
-            return $rules;
-        }
-
-        $formFields = $this->getForm()->formFields;
-
-        foreach ($formFields as $field) {
-            $rules[$field->getDatabaseField()] = $field->getValidationRules();
-        }
-
-        return $rules;
-    }
-
-    /**
-     * @return null|Model
-     */
-    public function getModel()
-    {
-        if (!$this->getForm()) {
+        $formFile = $this->getFormFile($this->name);
+        if (!$formFile) {
             return null;
         }
 
-        return $this->getForm()->getModel();
-    }
-
-    /**
-     * @return null|Form
-     */
-    public function getForm()
-    {
-        $objectFile = $this->getFormFile($this->name);
-        if (!$objectFile) {
-            return null;
-        }
-
-        return new Form($objectFile);
+        return new Form($formFile, $type);
     }
 
 
@@ -157,7 +138,7 @@ class AdminCrud
      * @param string $name
      * @return array|null
      */
-    public function getFormFile($name)
+    protected function getFormFile($name)
     {
         $objectPath = config('markofly.admincrud.path'). '/' . $name .'.php';
 
@@ -172,5 +153,20 @@ class AdminCrud
         }
 
         return $objectSettings;
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    protected function isFormFileExists($name)
+    {
+        $formFile = $this->getFormFile($name);
+
+        if (!$formFile) {
+            return false;
+        }
+
+        return true;
     }
 }

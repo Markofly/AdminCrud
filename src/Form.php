@@ -1,6 +1,8 @@
 <?php
+
 namespace Markofly\AdminCrud;
 
+use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -14,11 +16,6 @@ class Form
      * @var array
      */
     public $fields;
-
-    /**
-     * @var array
-     */
-    public $formFields;
 
     /**
      * @var Model
@@ -37,16 +34,39 @@ class Form
 
     /**
      * Form constructor.
-     * @param $file
+     * @param array $file
+     * @param string $type
+     * @throws \Exception
      */
-    public function __construct($file)
+    public function __construct($file, $type = 'list')
     {
+        if ($type === 'edit') {
+            $formFieldsName = 'edit_form';
+        } else if ($type === 'create') {
+            $formFieldsName = 'create_form';
+        } else {
+            $formFieldsName = 'list';
+        }
+
+        if (!isset($file['model'])) {
+            throw new \Exception('Model is required in form file');
+        }
+
+        if (!isset($file['route_name'])) {
+            throw new \Exception('Route name prefix is required in form file');
+        }
+
         $this->model = new $file['model'];
         $this->routeName = $file['route_name'];
-        $this->perPage = $file['per_page'];
 
-        $this->createFieldObjects($file['fields']);
-        $this->createFormFieldObjects($file['form']);
+        $this->setPerPage($file['per_page']);
+
+        if (isset($file[$formFieldsName])) {
+            $this->setFields($file[$formFieldsName]);
+        } else {
+            $this->fields = [];
+        }
+
     }
 
     /**
@@ -126,21 +146,6 @@ class Form
     }
 
     /**
-     * @param array $fields
-     */
-    protected function createFieldObjects($fields)
-    {
-        $fieldObjects = [];
-
-        foreach ($fields as $field) {
-            $object = new FormField($field);
-            $fieldObjects[] = $object;
-        }
-
-        $this->fields = $fieldObjects;
-    }
-
-    /**
      * @return string
      */
     protected function getRoutePrefix()
@@ -149,19 +154,95 @@ class Form
     }
 
     /**
-     * @param array $fields
+     * @return array
      */
-    protected function createFormFieldObjects($fields)
+    public function getFields()
     {
-        $fieldObjects = [];
-
-        foreach ($fields as $field) {
-            $object = new FormField($field);
-            $fieldObjects[] = $object;
+        if (!is_array($this->fields)) {
+            return [];
         }
 
-        $this->formFields = $fieldObjects;
+        return $this->fields;
     }
 
+    /**
+     * @param array $fields
+     * @return void
+     */
+    public function setFields($fields)
+    {
+        if (!is_array($fields)) {
+            $this->fields = [];
+        }
 
+        $formFields = [];
+
+        foreach ($fields as $field) {
+            $formFields[] = new FormField($field);
+        }
+
+        $this->fields = $formFields;
+    }
+
+    /**
+     * @param $perPage
+     * @return void
+     */
+    protected function setPerPage($perPage)
+    {
+        if (!isset($perPage)) {
+            $this->perPage = 20;
+            return;
+        }
+
+        $this->perPage = (int) $perPage;
+    }
+
+    /**
+     * @return array
+     */
+    public function getValidationRules()
+    {
+        $rules = [];
+        foreach ($this->getUpdateableFields() as $field) {
+            $rules[$field->getFieldName()] = $field->getValidationRules();
+        }
+
+        return $rules;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUpdateableFields()
+    {
+        $fields = [];
+        foreach ($this->getFields() as $field) {
+            if ($field->isEditable() === false || $field->isDatabaseField() === false) {
+                continue;
+            }
+
+            $fields[] = $field;
+        }
+
+        return $fields;
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function getValuesFromCustomStoringMethod(Request $request)
+    {
+        $fields = [];
+
+        foreach ($this->getUpdateableFields() as $field) {
+            if (!$request->has($field->getFieldName())) {
+                continue;
+            }
+            $fields[$field->getDatabaseField()] = $field->useStoringMethod($request->get($field->getFieldName()));
+        }
+
+        return $fields;
+    }
 }
