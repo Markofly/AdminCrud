@@ -86,7 +86,7 @@ trait AdminCrudTrait
      */
     public function edit($id)
     {
-        return view('AdminCrud::default', ['form' => $this->adminCrud->getEditFormView($id), 'pageTitle' => $this->pageTitle]);
+        return view($this->adminCrud->getLayoutViewName(), ['form' => $this->adminCrud->getEditFormView($id), 'pageTitle' => $this->pageTitle]);
     }
 
     /**
