@@ -1,9 +1,9 @@
 <label>{{ $field->getLabel() }}</label>
-@foreach($field->getMultipleData() as $radio)
-    <div class="radio">
+@foreach($field->getMultipleData() as $checkbox)
+    <div class="checkbox">
         <label>
-            <input type="radio" name="{{ $field->getFieldName() }}" value="{{ $radio['value'] }}">
-            {{ $radio['label'] }}
+            <input type="checkbox" name="{{ $field->getFieldName() }}" value="{{ $checkbox['value'] }}">
+            {{ $checkbox['label'] }}
         </label>
     </div>
 @endforeach

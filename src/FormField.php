@@ -38,6 +38,22 @@ class FormField
             'showDatabaseValue' => $showDatabaseValue,
         ];
 
+        if ($this->getFieldType() == 'select') {
+            return view('AdminCrud::fields.select', $args)->render();
+        }
+
+        if ($this->getFieldType() == 'radio') {
+            return view('AdminCrud::fields.radio', $args)->render();
+        }
+
+        if ($this->getFieldType() == 'checkboxes') {
+            return view('AdminCrud::fields.checkboxes', $args)->render();
+        }
+
+        if ($this->getFieldType() == 'checkbox') {
+            return view('AdminCrud::fields.checkbox', $args)->render();
+        }
+
         if ($this->getFieldType() == 'textarea') {
             return view('AdminCrud::fields.textarea', $args)->render();
         }
@@ -178,5 +194,14 @@ class FormField
         }
 
         return call_user_func($this->fieldArray['storing_method'], $value);
+    }
+
+    public function getMultipleData()
+    {
+        if (!isset($this->fieldArray['multiple_data'])) {
+            return [];
+        }
+
+        return $this->fieldArray['multiple_data'];
     }
 }

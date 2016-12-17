@@ -64,7 +64,13 @@ return [
 ```php
 [
     'label' => 'Password', // Label for fields
-    'type' => 'password', // Field type Currently available: text, password, textarea
+    'type' => 'password', // Field type Currently available: text, password, textarea, checkbox, checkboxes, radio, select
+    'multiple_data' => [ // Used only for radio, checkboxes, select
+        [
+            'label' => 'First label',
+            'value' => 'first',
+        ],
+    ],    
     'name' => 'password', // Field name
     'database_field' => 'password', // false for non database field; Database field name
     'validation_rules' => 'required|min:6|confirmed', //Laravel validation rules
@@ -77,7 +83,13 @@ return [
 ```php
 [
     'label' => 'Full name', // Label for fields
-    'type' => 'text', // Field type Currently available: text, password, textarea
+    'type' => 'text', // Field type Currently available: text, password, textarea, checkbox, checkboxes, radio, select
+    'multiple_data' => [ // Used only for radio, checkboxes, select
+        [
+            'label' => 'First label',
+            'value' => 'first',
+        ],
+    ], 
     'name' => 'name', // Field name
     'database_field' => 'name', // false for non database field; Database field name
     'validation_rules' => 'required', //Laravel validation rules

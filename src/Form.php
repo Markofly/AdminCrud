@@ -204,7 +204,7 @@ class Form
     public function getValidationRules()
     {
         $rules = [];
-        foreach ($this->getUpdateableFields() as $field) {
+        foreach ($this->getFields() as $field) {
             $rules[$field->getFieldName()] = $field->getValidationRules();
         }
 
