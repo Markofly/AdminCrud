@@ -196,9 +196,16 @@ class FormField
         return call_user_func($this->fieldArray['storing_method'], $value);
     }
 
+    /**
+     * @return array
+     */
     public function getMultipleData()
     {
         if (!isset($this->fieldArray['multiple_data'])) {
+            return [];
+        }
+
+        if (!is_array($this->fieldArray['multiple_data'])) {
             return [];
         }
 
