@@ -2,6 +2,8 @@
 
 namespace Markofly\AdminCrud;
 
+use Illuminate\Support\Facades\View;
+
 /**
  * Class AdminCrud
  * @package Markofly\AdminCrud
@@ -168,5 +170,19 @@ class AdminCrud
         }
 
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLayoutViewName()
+    {
+        $name = config('markofly.admincrud.default_view_name');
+
+        if (!View::exists($name)) {
+            return 'AdminCrud::default';
+        }
+
+        return $name;
     }
 }

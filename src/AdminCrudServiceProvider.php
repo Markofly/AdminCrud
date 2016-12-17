@@ -18,15 +18,15 @@ class AdminCrudServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../config/admincrud.php' => config_path('markofly/admincrud.php'),
-            ], 'AdminCrud');
+            ], 'config');
 
             $this->publishes([
                 __DIR__.'/../forms' => config_path('markofly/forms/'),
-            ], 'AdminCrud');
+            ], 'forms');
 
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/AdminCrud/'),
-            ], 'AdminCrud');
+            ], 'views');
 
         }
     }

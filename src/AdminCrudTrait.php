@@ -43,7 +43,7 @@ trait AdminCrudTrait
      */
     public function index()
     {
-        return view('AdminCrud::default', ['form' => $this->adminCrud->getListView(), 'pageTitle' => $this->pageTitle]);
+        return view($this->adminCrud->getLayoutViewName(), ['form' => $this->adminCrud->getListView(), 'pageTitle' => $this->pageTitle]);
     }
 
     /**
@@ -51,7 +51,7 @@ trait AdminCrudTrait
      */
     public function create()
     {
-        return view('AdminCrud::default', ['form' => $this->adminCrud->getCreateFormView(), 'pageTitle' => $this->pageTitle]);
+        return view($this->adminCrud->getLayoutViewName(), ['form' => $this->adminCrud->getCreateFormView(), 'pageTitle' => $this->pageTitle]);
     }
 
     /**
@@ -77,7 +77,7 @@ trait AdminCrudTrait
      */
     public function show($id)
     {
-        return view('AdminCrud::default', ['form' => $this->adminCrud->getShowView($id), 'pageTitle' => $this->pageTitle]);
+        return view($this->adminCrud->getLayoutViewName(), ['form' => $this->adminCrud->getShowView($id), 'pageTitle' => $this->pageTitle]);
     }
 
     /**
