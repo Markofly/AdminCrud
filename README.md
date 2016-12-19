@@ -10,7 +10,7 @@ AdminCrud is Laravel 5 package.
 Using composer
 
 ```bash
-$ composer require markofly/admincrud "v0.0.2-alpha"
+$ composer require markofly/admincrud "v0.0.3-alpha"
 ```
 
 Add the service provider to `config/app.php`
